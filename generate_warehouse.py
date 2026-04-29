@@ -104,12 +104,19 @@ def generate_mujoco_xml():
       <geom type="box" size="8 1 0.1" material="dock_yellow"/>
     </body>
     
-    <!-- A Test Robot (Sleeker design) -->
+    <!-- Robot 1 (Blue) -->
     <body name="robot1" pos="0 -8 0.5">
       <freejoint/>
       <!-- Chassis -->
       <geom type="cylinder" size="0.25 0.1" rgba="0.2 0.6 1.0 1" mass="10.0"/>
       <!-- LiDAR dome -->
+      <geom type="cylinder" size="0.1 0.05" pos="0 0 0.15" rgba="0.1 0.1 0.1 1" mass="1.0"/>
+    </body>
+    
+    <!-- Robot 2 (Red) -->
+    <body name="robot2" pos="0 8 0.5">
+      <freejoint/>
+      <geom type="cylinder" size="0.25 0.1" rgba="1.0 0.2 0.2 1" mass="10.0"/>
       <geom type="cylinder" size="0.1 0.05" pos="0 0 0.15" rgba="0.1 0.1 0.1 1" mass="1.0"/>
     </body>
     
