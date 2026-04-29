@@ -1,0 +1,69 @@
+<mujoco model="warehouse">
+  <option gravity="0 0 -9.81" timestep="0.005"/>
+  <compiler angle="degree"/>
+  
+  <asset>
+    <!-- Premium Textures -->
+    <texture type="skybox" builtin="gradient" rgb1="0.1 0.15 0.2" rgb2="0 0 0" width="512" height="512"/>
+    <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.15 0.15 0.15" rgb2="0.2 0.2 0.2"/>
+    <material name="floor_mat" texture="grid" texrepeat="10 10" texuniform="true" reflectance="0.1"/>
+    
+    <material name="wall_concrete" rgba="0.7 0.7 0.7 1" reflectance="0.0"/>
+    <material name="rack_orange" rgba="1.0 0.4 0.0 1" reflectance="0.2"/>
+    <material name="dock_yellow" rgba="0.9 0.8 0.1 1" reflectance="0.1"/>
+    
+    <!-- Load Meshes -->
+    <mesh name="walls_mesh" file="assets/walls.obj"/>
+    <mesh name="shelf_mesh" file="assets/shelf.obj"/>
+  </asset>
+  
+  <worldbody>
+    <!-- Lighting -->
+    <light pos="0 0 10" dir="0 0 -1" directional="true" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2"/>
+    <light pos="-8 0 5" dir="1 0 -1" directional="false" diffuse="0.5 0.5 0.5"/>
+    <light pos="8 0 5" dir="-1 0 -1" directional="false" diffuse="0.5 0.5 0.5"/>
+    
+    <!-- The Ground -->
+    <geom type="plane" size="15 15 0.05" material="floor_mat"/>
+    
+    <!-- The Warehouse Walls -->
+    <body name="warehouse_walls" pos="0 0 0">
+      <geom type="mesh" mesh="walls_mesh" material="wall_concrete" contype="1" conaffinity="1"/>
+    </body>
+    
+    <!-- Shelving Units -->
+    <body name="shelf_-3_-4" pos="-3 -4 0">
+      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    </body>
+    <body name="shelf_3_-4" pos="3 -4 0">
+      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    </body>
+    <body name="shelf_-3_0" pos="-3 0 0">
+      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    </body>
+    <body name="shelf_3_0" pos="3 0 0">
+      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    </body>
+    <body name="shelf_-3_4" pos="-3 4 0">
+      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    </body>
+    <body name="shelf_3_4" pos="3 4 0">
+      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    </body>
+    
+    <!-- Loading Dock Area -->
+    <body name="loading_dock" pos="0 -9 0.1">
+      <geom type="box" size="8 1 0.1" material="dock_yellow"/>
+    </body>
+    
+    <!-- A Test Robot (Sleeker design) -->
+    <body name="robot1" pos="0 -8 0.5">
+      <freejoint/>
+      <!-- Chassis -->
+      <geom type="cylinder" size="0.25 0.1" rgba="0.2 0.6 1.0 1" mass="10.0"/>
+      <!-- LiDAR dome -->
+      <geom type="cylinder" size="0.1 0.05" pos="0 0 0.15" rgba="0.1 0.1 0.1 1" mass="1.0"/>
+    </body>
+    
+  </worldbody>
+</mujoco>
