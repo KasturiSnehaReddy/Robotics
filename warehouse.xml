@@ -3,73 +3,574 @@
   <compiler angle="degree"/>
   
   <asset>
-    <!-- Premium Textures -->
-    <texture type="skybox" builtin="gradient" rgb1="0.1 0.15 0.2" rgb2="0 0 0" width="512" height="512"/>
-    <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.15 0.15 0.15" rgb2="0.2 0.2 0.2"/>
-    <material name="floor_mat" texture="grid" texrepeat="10 10" texuniform="true" reflectance="0.1"/>
+    <texture type="skybox" builtin="gradient" rgb1="0.4 0.6 0.8" rgb2="0 0 0" width="512" height="512"/>
+    <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.8 0.8 0.8" rgb2="0.75 0.75 0.75"/>
+    <material name="floor_mat" texture="grid" texrepeat="20 20" texuniform="true" reflectance="0.05"/>
     
-    <material name="wall_concrete" rgba="0.7 0.7 0.7 1" reflectance="0.0"/>
-    <material name="rack_orange" rgba="1.0 0.4 0.0 1" reflectance="0.2"/>
-    <material name="dock_yellow" rgba="0.9 0.8 0.1 1" reflectance="0.1"/>
-    
-    <!-- Load Meshes -->
-    <mesh name="walls_mesh" file="assets/walls.obj"/>
-    <mesh name="shelf_mesh" file="assets/shelf.obj"/>
+    <material name="mat_blue_rack" rgba="0.05 0.15 0.35 1" reflectance="0.2"/>
+    <material name="mat_box_brown" rgba="0.76 0.6 0.42 1" reflectance="0.0"/>
+    <material name="mat_pillar" rgba="0.85 0.8 0.75 1" reflectance="0.0"/>
+    <material name="mat_wall" rgba="0.8 0.8 0.8 1" reflectance="0.0"/>
+    <material name="mat_barrel" rgba="0.9 0.8 0.1 1" reflectance="0.3"/>
+    <material name="mat_office" rgba="0.7 0.7 0.75 1" reflectance="0.1"/>
+    <material name="mat_office_roof" rgba="0.8 0.8 0.85 1" reflectance="0.1"/>
   </asset>
-  
+
   <worldbody>
     <!-- Lighting -->
-    <light pos="0 0 10" dir="0 0 -1" directional="true" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2"/>
-    <light pos="-8 0 5" dir="1 0 -1" directional="false" diffuse="0.5 0.5 0.5"/>
-    <light pos="8 0 5" dir="-1 0 -1" directional="false" diffuse="0.5 0.5 0.5"/>
+    <light pos="0 0 15" dir="0 0 -1" directional="true" diffuse="0.9 0.9 0.9" specular="0.1 0.1 0.1" castshadow="true"/>
+    <light pos="-10 0 10" dir="1 0 -1" directional="false" diffuse="0.4 0.4 0.4"/>
+    <light pos="10 0 10" dir="-1 0 -1" directional="false" diffuse="0.4 0.4 0.4"/>
     
-    <!-- The Ground -->
-    <geom type="plane" size="15 15 0.05" material="floor_mat"/>
+    <!-- Floor -->
+    <geom type="plane" size="16 11 0.05" material="floor_mat"/>
     
-    <!-- The Warehouse Walls -->
-    <body name="warehouse_walls" pos="0 0 0">
-      <geom type="mesh" mesh="walls_mesh" material="wall_concrete" contype="1" conaffinity="1"/>
-    </body>
     
-    <!-- Shelving Units -->
-    <body name="shelf_-3_-4" pos="-3 -4 0">
-      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    <!-- Perimeter Walls -->
+    <body name="wall_left" pos="-16 0 2.5">
+      <geom type="box" size="0.2 11 2.5" material="mat_wall"/>
     </body>
-    <body name="shelf_3_-4" pos="3 -4 0">
-      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    <body name="wall_right" pos="16 0 2.5">
+      <geom type="box" size="0.2 11 2.5" material="mat_wall"/>
     </body>
-    <body name="shelf_-3_0" pos="-3 0 0">
-      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    <body name="wall_top" pos="0 11 2.5">
+      <geom type="box" size="16.2 0.2 2.5" material="mat_wall"/>
     </body>
-    <body name="shelf_3_0" pos="3 0 0">
-      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
-    </body>
-    <body name="shelf_-3_4" pos="-3 4 0">
-      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
-    </body>
-    <body name="shelf_3_4" pos="3 4 0">
-      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    <body name="wall_bottom" pos="0 -11 2.5">
+      <geom type="box" size="16.2 0.2 2.5" material="mat_wall"/>
     </body>
     
-    <!-- Loading Dock Area -->
-    <body name="loading_dock" pos="0 -9 0.1">
-      <geom type="box" size="8 1 0.1" material="dock_yellow"/>
+    <body name="pillar_1" pos="-14 -9.5 2.5">
+      <geom type="box" size="0.3 0.3 2.5" material="mat_pillar"/>
+    </body>
+    <body name="pillar_2" pos="-14 9.5 2.5">
+      <geom type="box" size="0.3 0.3 2.5" material="mat_pillar"/>
+    </body>
+    <body name="pillar_3" pos="0 -9.5 2.5">
+      <geom type="box" size="0.3 0.3 2.5" material="mat_pillar"/>
+    </body>
+    <body name="pillar_4" pos="0 9.5 2.5">
+      <geom type="box" size="0.3 0.3 2.5" material="mat_pillar"/>
+    </body>
+    <body name="pillar_5" pos="14 -9.5 2.5">
+      <geom type="box" size="0.3 0.3 2.5" material="mat_pillar"/>
+    </body>
+    <body name="pillar_6" pos="14 9.5 2.5">
+      <geom type="box" size="0.3 0.3 2.5" material="mat_pillar"/>
     </body>
     
-    <!-- Robot 1 (Blue) -->
-    <body name="robot1" pos="0 -8 0.5">
+    <!-- Office Block -->
+    <body name="office_container" pos="12 -7 1.5">
+      <geom type="box" size="3 2 1.5" material="mat_office"/>
+      <geom type="box" size="3.1 2.1 0.1" pos="0 0 1.5" material="mat_office_roof"/>
+    </body>
+    
+    <body name="barrel_1" pos="12 7 0.5">
+      <geom type="cylinder" size="0.4 0.5" material="mat_barrel"/>
+    </body>
+    <body name="barrel_2" pos="12 8 0.5">
+      <geom type="cylinder" size="0.4 0.5" material="mat_barrel"/>
+    </body>
+    <body name="barrel_3" pos="13 7 0.5">
+      <geom type="cylinder" size="0.4 0.5" material="mat_barrel"/>
+    </body>
+    <body name="barrel_4" pos="13 8 0.5">
+      <geom type="cylinder" size="0.4 0.5" material="mat_barrel"/>
+    </body>
+    <body name="barrel_5" pos="14 7 0.5">
+      <geom type="cylinder" size="0.4 0.5" material="mat_barrel"/>
+    </body>
+    <body name="barrel_6" pos="14 8 0.5">
+      <geom type="cylinder" size="0.4 0.5" material="mat_barrel"/>
+    </body>
+    
+    <!-- Rack 1 -->
+    <body name="rack_1" pos="-10 -6 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 2 -->
+    <body name="rack_2" pos="-6 -6 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 3 -->
+    <body name="rack_3" pos="-2 -6 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 4 -->
+    <body name="rack_4" pos="2 -6 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 5 -->
+    <body name="rack_5" pos="6 -6 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 6 -->
+    <body name="rack_6" pos="-10 -2 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 7 -->
+    <body name="rack_7" pos="-6 -2 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 8 -->
+    <body name="rack_8" pos="-2 -2 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 9 -->
+    <body name="rack_9" pos="2 -2 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 10 -->
+    <body name="rack_10" pos="6 -2 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 11 -->
+    <body name="rack_11" pos="-10 2 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 12 -->
+    <body name="rack_12" pos="-6 2 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 13 -->
+    <body name="rack_13" pos="-2 2 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 14 -->
+    <body name="rack_14" pos="2 2 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 15 -->
+    <body name="rack_15" pos="6 2 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 16 -->
+    <body name="rack_16" pos="-10 6 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 17 -->
+    <body name="rack_17" pos="-6 6 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 18 -->
+    <body name="rack_18" pos="-2 6 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 19 -->
+    <body name="rack_19" pos="2 6 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    <!-- Rack 20 -->
+    <body name="rack_20" pos="6 6 0">
+      <geom type="box" size="0.05 0.05 1.5" pos="-1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="-1.0 0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 -0.5 1.5" material="mat_blue_rack"/>
+<geom type="box" size="0.05 0.05 1.5" pos="1.0 0.5 1.5" material="mat_blue_rack"/>
+
+      <geom type="box" size="1.0 0.5 0.05" pos="0 0 0.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 0.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 1.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 1.425" material="mat_box_brown"/>
+<geom type="box" size="1.0 0.5 0.05" pos="0 0 2.2" material="mat_blue_rack"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.75 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="-0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.25 0 2.425" material="mat_box_brown"/>
+<geom type="box" size="0.175 0.175 0.175" pos="0.75 0 2.425" material="mat_box_brown"/>
+
+    </body>
+    
+    <!-- Robot 1 (The Mapper) -->
+    <body name="robot1" pos="-12 -8 0.2">
       <freejoint/>
-      <!-- Chassis -->
-      <geom type="cylinder" size="0.25 0.1" rgba="0.2 0.6 1.0 1" mass="10.0"/>
-      <!-- LiDAR dome -->
+      <geom type="cylinder" size="0.3 0.1" rgba="0.2 0.8 0.2 1" mass="10.0"/>
       <geom type="cylinder" size="0.1 0.05" pos="0 0 0.15" rgba="0.1 0.1 0.1 1" mass="1.0"/>
-    </body>
-    
-    <!-- Robot 2 (Red) -->
-    <body name="robot2" pos="0 8 0.5">
-      <freejoint/>
-      <geom type="cylinder" size="0.25 0.1" rgba="1.0 0.2 0.2 1" mass="10.0"/>
-      <geom type="cylinder" size="0.1 0.05" pos="0 0 0.15" rgba="0.1 0.1 0.1 1" mass="1.0"/>
+      <camera name="lidar_cam1" pos="0 0.25 0.15" euler="90 0 0" fovy="90"/>
     </body>
     
   </worldbody>

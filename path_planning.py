@@ -4,14 +4,14 @@ import matplotlib.patches as patches
 import numpy as np
 
 # Warehouse Dimensions
-MIN_X, MAX_X = -10, 10
-MIN_Y, MAX_Y = -10, 10
+MIN_X, MAX_X = -17, 17
+MIN_Y, MAX_Y = -12, 12
 
 def build_warehouse_graph():
     print("Building NetworkX Graph map of the warehouse...")
     G = nx.Graph()
     
-    # 1. Create a grid of nodes (ignoring the exact outer walls at +/-10)
+    # 1. Create a grid of nodes
     for x in range(MIN_X + 1, MAX_X):
         for y in range(MIN_Y + 1, MAX_Y):
             G.add_node((x, y))
@@ -19,25 +19,41 @@ def build_warehouse_graph():
     # 2. Add edges (4-way connectivity)
     for x, y in G.nodes():
         neighbors = [(x+1, y), (x-1, y), (x, y+1), (x, y-1)]
-        # Optional: Add diagonals
-        # neighbors.extend([(x+1, y+1), (x-1, y-1), (x+1, y-1), (x-1, y+1)])
-        
         for nx_pos in neighbors:
             if nx_pos in G:
-                # Add edge with weight 1 for straight lines
                 G.add_edge((x, y), nx_pos, weight=1.0)
                 
-    # 3. Define Obstacles (Shelves)
-    # Our shelves are at y = -4, 0, 4
-    # They span x from -5 to -1, and 1 to 5
+    import os
     obstacles = []
-    for y_center in [-4, 0, 4]:
-        # Left shelf
-        for x in range(-5, 0): # -5, -4, -3, -2, -1
-            obstacles.append((x, y_center))
-        # Right shelf
-        for x in range(1, 6): # 1, 2, 3, 4, 5
-            obstacles.append((x, y_center))
+    
+    if os.path.exists("scanned_grid.npy"):
+        print(">>> CLOSED LOOP: Loading 2D Occupancy Grid from LiDAR scan! <<<")
+        occupancy_grid = np.load("scanned_grid.npy")
+        for row in range(25):
+            for col in range(35):
+                if occupancy_grid[row, col] == 1:
+                    x = col - 17
+                    y = row - 12
+                    obstacles.append((x, y))
+    else:
+        print(">>> EXPLORATION MODE: No saved map found. Using hardcoded blueprint. <<<")
+        # Racks at y = -6, -2, 2, 6 and x = -10, -6, -2, 2, 6
+        for y_center in [-6, -2, 2, 6]:
+            for x_center in [-10, -6, -2, 2, 6]:
+                for x in range(x_center-1, x_center+2):
+                    obstacles.append((x, y_center))
+        # Office block at 12, -7
+        for x in range(11, 15):
+            for y in range(-8, -5):
+                obstacles.append((x, y))
+        # Barrels at 12,13,14 and 7,8
+        for x in [12, 13, 14]:
+            for y in [7, 8]:
+                obstacles.append((x, y))
+            
+    # CRITICAL: Always ensure Start and Goal nodes are never marked as obstacles 
+    safe_nodes = [(-12, -8), (12, 4), (-12, 8), (12, -4)]
+    obstacles = [obs for obs in obstacles if obs not in safe_nodes]
             
     # Remove obstacle nodes from the graph
     for obs in obstacles:

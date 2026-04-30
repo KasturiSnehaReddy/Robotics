@@ -1,143 +1,180 @@
 import os
-import trimesh
-from shapely.geometry import Polygon, box
 import mujoco
 import mujoco.viewer
 
-def create_walls_mesh():
-    print("Generating Warehouse Walls (Shapely + Trimesh)...")
-    # Outer 20x20, inner 19x19
-    outer_wall = box(-10, -10, 10, 10)
-    inner_empty_space = box(-9.5, -9.5, 9.5, 9.5)
-    walls_2d = outer_wall.difference(inner_empty_space)
-    
-    # Extrude
-    if walls_2d.geom_type == 'MultiPolygon':
-        meshes = [trimesh.creation.extrude_polygon(p, height=3.0) for p in walls_2d.geoms]
-        walls_mesh = trimesh.util.concatenate(meshes)
-    else:
-        walls_mesh = trimesh.creation.extrude_polygon(walls_2d, height=3.0)
-        
-    os.makedirs('assets', exist_ok=True)
-    walls_path = os.path.join('assets', 'walls.obj')
-    walls_mesh.export(walls_path)
-    print(f"Saved walls to {walls_path}")
-
-def create_shelf_mesh():
-    print("Generating Detailed Shelf Rack (Trimesh)...")
-    # Dimensions: 4m long, 1m deep, 2.5m tall
-    w, d, h = 4.0, 1.0, 2.5
-    thickness = 0.1
-    
-    meshes = []
-    # 4 Vertical posts
-    for x in [-w/2 + thickness/2, w/2 - thickness/2]:
-        for y in [-d/2 + thickness/2, d/2 - thickness/2]:
-            post = trimesh.creation.box(extents=[thickness, thickness, h])
-            post.apply_translation([x, y, h/2])
-            meshes.append(post)
-            
-    # 4 Horizontal levels
-    for z in [0.2, 0.9, 1.6, 2.3]:
-        level = trimesh.creation.box(extents=[w, d, thickness])
-        level.apply_translation([0, 0, z])
-        meshes.append(level)
-        
-    shelf_mesh = trimesh.util.concatenate(meshes)
-    shelf_path = os.path.join('assets', 'shelf.obj')
-    shelf_mesh.export(shelf_path)
-    print(f"Saved shelf to {shelf_path}")
-
 def generate_mujoco_xml():
-    print("Generating Aesthetic Mujoco XML...")
+    print("Generating Aesthetic Mujoco XML (Primitive Based)...")
     
-    # Generate shelf placements
-    # 3 rows of shelves, each row has 2 units placed end-to-end
+    # ---------------- MATERIALS & ASSETS ----------------
+    xml_assets = """
+  <asset>
+    <texture type="skybox" builtin="gradient" rgb1="0.4 0.6 0.8" rgb2="0 0 0" width="512" height="512"/>
+    <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.8 0.8 0.8" rgb2="0.75 0.75 0.75"/>
+    <material name="floor_mat" texture="grid" texrepeat="20 20" texuniform="true" reflectance="0.05"/>
+    
+    <material name="mat_blue_rack" rgba="0.05 0.15 0.35 1" reflectance="0.2"/>
+    <material name="mat_box_brown" rgba="0.76 0.6 0.42 1" reflectance="0.0"/>
+    <material name="mat_pillar" rgba="0.85 0.8 0.75 1" reflectance="0.0"/>
+    <material name="mat_wall" rgba="0.8 0.8 0.8 1" reflectance="0.0"/>
+    <material name="mat_barrel" rgba="0.9 0.8 0.1 1" reflectance="0.3"/>
+    <material name="mat_office" rgba="0.7 0.7 0.75 1" reflectance="0.1"/>
+    <material name="mat_office_roof" rgba="0.8 0.8 0.85 1" reflectance="0.1"/>
+  </asset>
+"""
+
+    # ---------------- GENERATE SHELVES & BOXES ----------------
     shelf_xml = ""
-    y_positions = [-4, 0, 4] # Aisles
-    x_positions = [-3, 3]    # End to end
+    # Rack unit params
+    rack_w, rack_d, rack_h = 2.0, 1.0, 3.0
+    thickness = 0.05
+    levels = [0.2, 1.2, 2.2] # Z heights of shelves
     
-    for y in y_positions:
+    # Racks layout
+    y_aisles = [-6, -2, 2, 6]
+    x_positions = [-10, -6, -2, 2, 6] # End to end racks
+    
+    rack_counter = 0
+    for y in y_aisles:
         for x in x_positions:
+            rack_counter += 1
+            # Vertical posts
+            posts = ""
+            for px in [-rack_w/2, rack_w/2]:
+                for py in [-rack_d/2, rack_d/2]:
+                    posts += f'<geom type="box" size="{thickness} {thickness} {rack_h/2}" pos="{px} {py} {rack_h/2}" material="mat_blue_rack"/>\n'
+            
+            # Horizontal levels & boxes
+            shelves_and_boxes = ""
+            for z in levels:
+                # The shelf plank
+                shelves_and_boxes += f'<geom type="box" size="{rack_w/2} {rack_d/2} {thickness}" pos="0 0 {z}" material="mat_blue_rack"/>\n'
+                
+                # Boxes on this shelf (let's put 4 boxes per level)
+                box_size = 0.35
+                for bx in [-0.75, -0.25, 0.25, 0.75]:
+                    shelves_and_boxes += f'<geom type="box" size="{box_size/2} {box_size/2} {box_size/2}" pos="{bx} 0 {z + thickness + box_size/2}" material="mat_box_brown"/>\n'
+
             shelf_xml += f"""
-    <body name="shelf_{x}_{y}" pos="{x} {y} 0">
-      <geom type="mesh" mesh="shelf_mesh" material="rack_orange" contype="1" conaffinity="1"/>
+    <!-- Rack {rack_counter} -->
+    <body name="rack_{rack_counter}" pos="{x} {y} 0">
+      {posts}
+      {shelves_and_boxes}
     </body>"""
 
+    # ---------------- WALLS ----------------
+    walls_xml = """
+    <!-- Perimeter Walls -->
+    <body name="wall_left" pos="-16 0 2.5">
+      <geom type="box" size="0.2 11 2.5" material="mat_wall"/>
+    </body>
+    <body name="wall_right" pos="16 0 2.5">
+      <geom type="box" size="0.2 11 2.5" material="mat_wall"/>
+    </body>
+    <body name="wall_top" pos="0 11 2.5">
+      <geom type="box" size="16.2 0.2 2.5" material="mat_wall"/>
+    </body>
+    <body name="wall_bottom" pos="0 -11 2.5">
+      <geom type="box" size="16.2 0.2 2.5" material="mat_wall"/>
+    </body>"""
+
+    # ---------------- PILLARS ----------------
+    pillars_xml = ""
+    pillar_x = [-14, 0, 14]
+    pillar_y = [-9.5, 9.5]
+    p_idx = 0
+    for px in pillar_x:
+        for py in pillar_y:
+            p_idx += 1
+            pillars_xml += f"""
+    <body name="pillar_{p_idx}" pos="{px} {py} 2.5">
+      <geom type="box" size="0.3 0.3 2.5" material="mat_pillar"/>
+    </body>"""
+
+    # ---------------- BARRELS ----------------
+    barrels_xml = ""
+    b_idx = 0
+    for bx in [12, 13, 14]:
+        for by in [7, 8]:
+            b_idx += 1
+            barrels_xml += f"""
+    <body name="barrel_{b_idx}" pos="{bx} {by} 0.5">
+      <geom type="cylinder" size="0.4 0.5" material="mat_barrel"/>
+    </body>"""
+
+    # ---------------- OFFICE BLOCK ----------------
+    office_xml = """
+    <!-- Office Block -->
+    <body name="office_container" pos="12 -7 1.5">
+      <geom type="box" size="3 2 1.5" material="mat_office"/>
+      <geom type="box" size="3.1 2.1 0.1" pos="0 0 1.5" material="mat_office_roof"/>
+    </body>"""
+
+    # ---------------- ROBOTS ----------------
+    import os
+    is_exploration = not os.path.exists("scanned_grid.npy")
+    
+    robots_xml = """
+    <!-- Robot 1 (The Mapper) -->
+    <body name="robot1" pos="-12 -8 0.2">
+      <freejoint/>
+      <geom type="cylinder" size="0.3 0.1" rgba="0.2 0.8 0.2 1" mass="10.0"/>
+      <geom type="cylinder" size="0.1 0.05" pos="0 0 0.15" rgba="0.1 0.1 0.1 1" mass="1.0"/>
+      <camera name="lidar_cam1" pos="0 0.25 0.15" euler="90 0 0" fovy="90"/>
+    </body>"""
+
+    if not is_exploration:
+        robots_xml += """
+    <!-- Robot 2 -->
+    <body name="robot2" pos="-12 8 0.2">
+      <freejoint/>
+      <geom type="cylinder" size="0.3 0.1" rgba="0.8 0.2 0.2 1" mass="10.0"/>
+      <geom type="cylinder" size="0.1 0.05" pos="0 0 0.15" rgba="0.1 0.1 0.1 1" mass="1.0"/>
+      <camera name="lidar_cam2" pos="0 0.25 0.15" euler="90 0 0" fovy="90"/>
+    </body>"""
+
+    # ---------------- FULL XML ASSEMBLE ----------------
     xml_string = f"""<mujoco model="warehouse">
   <option gravity="0 0 -9.81" timestep="0.005"/>
   <compiler angle="degree"/>
-  
-  <asset>
-    <!-- Premium Textures -->
-    <texture type="skybox" builtin="gradient" rgb1="0.1 0.15 0.2" rgb2="0 0 0" width="512" height="512"/>
-    <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1="0.15 0.15 0.15" rgb2="0.2 0.2 0.2"/>
-    <material name="floor_mat" texture="grid" texrepeat="10 10" texuniform="true" reflectance="0.1"/>
-    
-    <material name="wall_concrete" rgba="0.7 0.7 0.7 1" reflectance="0.0"/>
-    <material name="rack_orange" rgba="1.0 0.4 0.0 1" reflectance="0.2"/>
-    <material name="dock_yellow" rgba="0.9 0.8 0.1 1" reflectance="0.1"/>
-    
-    <!-- Load Meshes -->
-    <mesh name="walls_mesh" file="assets/walls.obj"/>
-    <mesh name="shelf_mesh" file="assets/shelf.obj"/>
-  </asset>
-  
+  {xml_assets}
   <worldbody>
     <!-- Lighting -->
-    <light pos="0 0 10" dir="0 0 -1" directional="true" diffuse="0.8 0.8 0.8" specular="0.2 0.2 0.2"/>
-    <light pos="-8 0 5" dir="1 0 -1" directional="false" diffuse="0.5 0.5 0.5"/>
-    <light pos="8 0 5" dir="-1 0 -1" directional="false" diffuse="0.5 0.5 0.5"/>
+    <light pos="0 0 15" dir="0 0 -1" directional="true" diffuse="0.9 0.9 0.9" specular="0.1 0.1 0.1" castshadow="true"/>
+    <light pos="-10 0 10" dir="1 0 -1" directional="false" diffuse="0.4 0.4 0.4"/>
+    <light pos="10 0 10" dir="-1 0 -1" directional="false" diffuse="0.4 0.4 0.4"/>
     
-    <!-- The Ground -->
-    <geom type="plane" size="15 15 0.05" material="floor_mat"/>
+    <!-- Floor -->
+    <geom type="plane" size="16 11 0.05" material="floor_mat"/>
     
-    <!-- The Warehouse Walls -->
-    <body name="warehouse_walls" pos="0 0 0">
-      <geom type="mesh" mesh="walls_mesh" material="wall_concrete" contype="1" conaffinity="1"/>
-    </body>
-    
-    <!-- Shelving Units -->{shelf_xml}
-    
-    <!-- Loading Dock Area -->
-    <body name="loading_dock" pos="0 -9 0.1">
-      <geom type="box" size="8 1 0.1" material="dock_yellow"/>
-    </body>
-    
-    <!-- Robot 1 (Blue) -->
-    <body name="robot1" pos="0 -8 0.5">
-      <freejoint/>
-      <!-- Chassis -->
-      <geom type="cylinder" size="0.25 0.1" rgba="0.2 0.6 1.0 1" mass="10.0"/>
-      <!-- LiDAR dome -->
-      <geom type="cylinder" size="0.1 0.05" pos="0 0 0.15" rgba="0.1 0.1 0.1 1" mass="1.0"/>
-    </body>
-    
-    <!-- Robot 2 (Red) -->
-    <body name="robot2" pos="0 8 0.5">
-      <freejoint/>
-      <geom type="cylinder" size="0.25 0.1" rgba="1.0 0.2 0.2 1" mass="10.0"/>
-      <geom type="cylinder" size="0.1 0.05" pos="0 0 0.15" rgba="0.1 0.1 0.1 1" mass="1.0"/>
-    </body>
+    {walls_xml}
+    {pillars_xml}
+    {office_xml}
+    {barrels_xml}
+    {shelf_xml}
+    {robots_xml}
     
   </worldbody>
-</mujoco>
-"""
+</mujoco>"""
+
     with open("warehouse.xml", "w") as f:
         f.write(xml_string)
-    print("Saved Mujoco configuration to warehouse.xml")
+    print("Saved beautiful warehouse to warehouse.xml")
     return xml_string
 
 def main():
-    create_walls_mesh()
-    create_shelf_mesh()
-    xml_string = generate_mujoco_xml()
+    generate_mujoco_xml()
     
     print("Launching Mujoco Viewer...")
     model = mujoco.MjModel.from_xml_path("warehouse.xml")
     data = mujoco.MjData(model)
     
+    # Customize viewer to look down like the reference image
     with mujoco.viewer.launch_passive(model, data) as viewer:
+        viewer.cam.azimuth = 135
+        viewer.cam.elevation = -45
+        viewer.cam.distance = 40.0
+        viewer.cam.lookat[:] = [0, 0, 0]
+        
         print("Viewer running. Close window to exit.")
         while viewer.is_running():
             mujoco.mj_step(model, data)
